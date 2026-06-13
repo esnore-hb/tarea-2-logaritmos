@@ -1,5 +1,6 @@
 # Data generated for the experiment
 *.data
+*.results
 
 # Prerequisites
 *.d

@@ -17,4 +17,4 @@ avl-test:
 	bash ./scripts/avl-test.sh
 
 clean:
-	find . -type f \( -name "*.out" -o -name "*.data" \) -delete
+	find . -type f \( -name "*.out" -o -name "*.data" -o -name "*.results" \) -delete

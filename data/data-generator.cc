@@ -1,6 +1,5 @@
 #include <cstdint>
 #include <fstream>
-#include <filesystem>
 #include <iostream>
 #include <random>
 #include <string>
@@ -17,7 +16,7 @@ int main(int argc, char* argv[]) {
   try {
     a = std::stoi(argv[1]);
   } catch (...) {
-    std::cerr << "Error: el argumento debe ser un entero.\n";
+    std::cerr << "[ERROR]: el argumento debe ser un entero.\n";
     return 1;
   }
 
@@ -38,13 +37,11 @@ int main(int argc, char* argv[]) {
   }
 
   // Escribir al archivo
-  namespace fs = std::filesystem;
-  fs::create_directories("data");
   std::string filename = "data/datos_" + std::to_string(a) + ".data";
   std::ofstream out(filename, std::ios::binary);
   if (!out) {
     std::cerr
-      << "Error: no se pudo abrir el archivo "
+      << "[ERROR]: no se pudo abrir el archivo "
       << filename << ".\n";
     return 1;
   }
@@ -58,7 +55,7 @@ int main(int argc, char* argv[]) {
   );
 
   if (!out) {
-    std::cerr << "Error durante la escritura del archivo.\n";
+    std::cerr << "[ERROR] durante la escritura del archivo.\n";
     return 1;
   }
   out.close();

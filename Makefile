@@ -6,6 +6,11 @@ AVL_TEST := avl-test
 
 .PHONY: all
 
+all:
+	make data-generator
+	make avl
+	make avl-test
+
 data-generator:
 	$(CXX) ./data/data-generator.cc $(FLAGS) ./data/data-generator.out
 	bash ./scripts/data-generator.sh
@@ -15,6 +20,7 @@ avl:
 
 avl-test:
 	bash ./scripts/avl-test.sh
+	python ./avl-test.py
 
 clean:
-	find . -type f \( -name "*.out" -o -name "*.data" -o -name "*.results" \) -delete
+	find . -type f \( -name "*.out" -o -name "*.data" -o -name "*.results" -o -name "*.png" \) -delete

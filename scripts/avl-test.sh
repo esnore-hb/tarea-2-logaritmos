@@ -28,16 +28,13 @@ mkdir -p "$RESULTS_DIR" || {
 }
 
 for N in "${DATASETS[@]}"; do
-
     DATA_FILE="${DATA_DIR}/datos_${N}.data"
-
     if [[ ! -f "$DATA_FILE" ]]; then
         echo "[WARNING] No existe '$DATA_FILE'. Se omite N=$N."
         continue
     fi
 
     echo "[INFO] Ejecutando benchmarks para N=$N"
-
     for FLAG in "${FLAGS[@]}"; do
 
         # Nombre del sufijo del archivo
@@ -49,26 +46,15 @@ for N in "${DATASETS[@]}"; do
         fi
 
         OUTPUT_FILE="${RESULTS_DIR}/avl-test-${N}${SUFFIX}.results"
-
         echo -n "  -> ${EXEC} ${N} ${FLAG} ... "
-
         if "$EXEC" "$N" ${FLAG:+$FLAG} > "$OUTPUT_FILE"; then
             echo "OK"
         else
             echo "FAILED"
-
-            # eliminar resultados incompletos
             rm -f "$OUTPUT_FILE"
-
-            # opcional: continuar con el resto
-            continue
-
-            # si prefieres abortar completamente:
-            # exit 1
+            exit 1
         fi
     done
-
     echo "[SUCCESS] Finalizado N=$N"
 done
-
 echo "[SUCCESS] Todos los benchmarks completados."

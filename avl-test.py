@@ -45,6 +45,32 @@ for N in Ns:
             insert_data[nombre].append(None)
             search_data[nombre].append(None)
 
+# n real de elementos
+n_real = [2**N for N in Ns]
+
+#
+# Inserción: Θ(n log n) = Θ(N*2^N)
+#
+insert_teorica = [N * (2**N) for N in Ns]
+
+#
+# Búsqueda: Θ(M log n)
+# M = 20N
+# => Θ(20*2^N)
+#
+search_teorica = [20 * (2**N) for N in Ns]
+
+# Escalar inserción
+factor_insert = insert_data["Aleatorio + Uniforme"][-1] / insert_teorica[-1]
+
+insert_teorica = [x * factor_insert for x in insert_teorica]
+
+
+# Escalar búsqueda
+factor_search = search_data["Aleatorio + Uniforme"][-1] / search_teorica[-1]
+
+search_teorica = [x * factor_search for x in search_teorica]
+
 #
 # Gráfico de inserciones
 #
@@ -53,15 +79,18 @@ plt.figure(figsize=(10, 6))
 for nombre, tiempos in insert_data.items():
     plt.plot(Ns, tiempos, marker="o", linewidth=2, label=nombre)
 
-plt.title("AVL - Tiempo de Inserción")
-plt.xlabel("N")
+plt.plot(Ns, insert_teorica, "--", linewidth=3, marker="s", label="Θ(N·2^N)")
+
+plt.title("AVL - Inserción")
+plt.xlabel("N (n = 2^N)")
 plt.ylabel("Tiempo (μs)")
 plt.xticks(Ns)
 plt.grid(visible=True, linestyle="--", alpha=0.5)
 plt.legend()
 
 plt.tight_layout()
-plt.show()
+plt.savefig("avl-test-insert.png", dpi=300)
+plt.close()
 
 
 #
@@ -72,12 +101,15 @@ plt.figure(figsize=(10, 6))
 for nombre, tiempos in search_data.items():
     plt.plot(Ns, tiempos, marker="o", linewidth=2, label=nombre)
 
-plt.title("AVL - Tiempo de Búsqueda")
-plt.xlabel("N")
+plt.plot(Ns, search_teorica, "--", linewidth=3, marker="s", label="Θ(20·2^N)")
+
+plt.title("AVL - Búsqueda")
+plt.xlabel("N (n = 2^N)")
 plt.ylabel("Tiempo (μs)")
 plt.xticks(Ns)
 plt.grid(visible=True, linestyle="--", alpha=0.5)
 plt.legend()
 
 plt.tight_layout()
-plt.show()
+plt.savefig("avl-test-search.png", dpi=300)
+plt.close()

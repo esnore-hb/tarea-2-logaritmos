@@ -1,63 +1,83 @@
 """Graficar los resultados obtenidos para la estructura AVL."""
+
 import re
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 
-# Archivos y etiquetas asociadas
+# Valores de N a considerar
+Ns = [10, 11, 12, 13, 14]
+
+# Configuración de experimentos
 experimentos = {
-    "Aleatorio + Uniforme": "./results/avl-test-10.results",
-    "Aleatorio + Sesgada": "./results/avl-test-10-b.results",
-    "Ordenado + Uniforme": "./results/avl-test-10-o.results",
-    "Ordenado + Sesgada": "./results/avl-test-10-bo.results"
+    "Aleatorio + Uniforme": "",
+    "Aleatorio + Sesgada": "-b",
+    "Ordenado + Uniforme": "-o",
+    "Ordenado + Sesgada": "-bo",
 }
 
-insert_times = []
-search_times = []
-labels = []
+# Estructuras para almacenar resultados
+insert_data = {nombre: [] for nombre in experimentos}
+search_data = {nombre: [] for nombre in experimentos}
 
-for nombre, archivo in experimentos.items():
-    with open(archivo, "r", encoding="utf-8") as f:
-        contenido = f.read()
+for N in Ns:
+    for nombre, sufijo in experimentos.items():
+        archivo = Path(f"./results/avl-test-{N}{sufijo}.results")
 
-    # Extraer tiempo de inserción
-    insert_match = re.search(r"\[INSERT\].*?:\s*(\d+)\s*us", contenido)
+        if not Path.exists(archivo):
+            print(f"Advertencia: no existe {archivo}")
+            insert_data[nombre].append(None)
+            search_data[nombre].append(None)
+            continue
 
-    # Extraer tiempo de búsqueda
-    search_match = re.search(r"\[SEARCH\].*?:\s*(\d+)\s*us", contenido)
+        with Path.open(archivo, "r", encoding="utf-8") as f:
+            contenido = f.read()
 
-    if insert_match and search_match:
-        insert_times.append(int(insert_match.group(1)))
-        search_times.append(int(search_match.group(1)))
-        labels.append(nombre)
-    else:
-        print(f"No fue posible leer correctamente {archivo}")
+        insert_match = re.search(r"\[INSERT\].*?:\s*(\d+)\s*us", contenido)
 
-# Posiciones para las barras
-x = range(len(labels))
-width = 0.35
+        search_match = re.search(r"\[SEARCH\].*?:\s*(\d+)\s*us", contenido)
 
+        if insert_match and search_match:
+            insert_data[nombre].append(int(insert_match.group(1)))
+            search_data[nombre].append(int(search_match.group(1)))
+        else:
+            print(f"No se pudieron extraer datos desde {archivo}")
+            insert_data[nombre].append(None)
+            search_data[nombre].append(None)
+
+#
+# Gráfico de inserciones
+#
 plt.figure(figsize=(10, 6))
 
-# Barras de inserción
-plt.bar(
-    [i - width/2 for i in x],
-    insert_times,
-    width=width,
-    label="Insert",
-)
+for nombre, tiempos in insert_data.items():
+    plt.plot(Ns, tiempos, marker="o", linewidth=2, label=nombre)
 
-# Barras de búsqueda
-plt.bar(
-    [i + width/2 for i in x],
-    search_times,
-    width=width,
-    label="Search",
-)
-
-plt.xticks(x, labels, rotation=15)
+plt.title("AVL - Tiempo de Inserción")
+plt.xlabel("N")
 plt.ylabel("Tiempo (μs)")
-plt.title("N=10")
+plt.xticks(Ns)
+plt.grid(visible=True, linestyle="--", alpha=0.5)
 plt.legend()
-plt.grid(axis="y", linestyle="--", alpha=0.5)
+
+plt.tight_layout()
+plt.show()
+
+
+#
+# Gráfico de búsquedas
+#
+plt.figure(figsize=(10, 6))
+
+for nombre, tiempos in search_data.items():
+    plt.plot(Ns, tiempos, marker="o", linewidth=2, label=nombre)
+
+plt.title("AVL - Tiempo de Búsqueda")
+plt.xlabel("N")
+plt.ylabel("Tiempo (μs)")
+plt.xticks(Ns)
+plt.grid(visible=True, linestyle="--", alpha=0.5)
+plt.legend()
 
 plt.tight_layout()
 plt.show()

@@ -1,26 +1,36 @@
 CXX := g++
-FLAGS := -Wall -Wextra -Wpedantic -O3 -o
+# -static evita el conflicto de DLLs de libstdc++ en Windows/MinGW.
+FLAGS := -O2 -std=c++17 -static -Wall -Wextra
+# Tamaño de los experimentos 7.3: 2^EXP73. Oficial del informe: make EXP73=25
+EXP73 := 20
 
-DATA_GENERATOR := data-generator
-AVL_TEST := avl-test
+.PHONY: all experimentos graficos clean legacy
 
-.PHONY: all
+# ---------------------------------------------------------------------------
+# Pipeline PRINCIPAL: AVL vs Splay con configuración unificada (7.2 + 7.3).
+#   make            -> compila, corre ambas estructuras y grafica (2^20, prueba)
+#   make EXP73=25   -> corrida OFICIAL del informe (2^25, ~1 GB RAM, minutos)
+# ---------------------------------------------------------------------------
+all: experimentos graficos
 
-all:
-	make data-generator
-	make avl
-	make avl-test
+experimentos:
+	$(CXX) $(FLAGS) -DEXP_73=$(EXP73) experimentos_avl.cc   -o experimentos_avl.out
+	$(CXX) $(FLAGS) -DEXP_73=$(EXP73) experimentos_splay.cc -o experimentos_splay.out
+	./experimentos_avl.out
+	./experimentos_splay.out
 
-data-generator:
-	$(CXX) ./data/data-generator.cc $(FLAGS) ./data/data-generator.out
+graficos:
+	python graficos.py
+
+# ---------------------------------------------------------------------------
+# Pipeline LEGACY: benchmark AVL-only de la sección 7.2 (formato .results).
+# ---------------------------------------------------------------------------
+legacy:
+	$(CXX) ./data/data-generator.cc $(FLAGS) -o ./data/data-generator.out
 	bash ./scripts/data-generator.sh
-
-avl:
-	$(CXX) ./avl-test.cc $(FLAGS) ./avl-test.out
-
-avl-test:
+	$(CXX) ./avl-test.cc $(FLAGS) -o ./avl-test.out
 	bash ./scripts/avl-test.sh
 	python ./avl-test.py
 
 clean:
-	find . -type f \( -name "*.out" -o -name "*.data" -o -name "*.results" -o -name "*.png" \) -delete
+	find . -type f \( -name "*.out" -o -name "*.data" -o -name "*.results" -o -name "*.png" -o -name "*.csv" \) -delete

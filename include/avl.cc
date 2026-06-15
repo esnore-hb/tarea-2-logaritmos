@@ -176,6 +176,7 @@ CLASE PRINCIPAL: AVL
 class AVL {
 private:
   Nodo *raiz;
+  size_t n_; // cantidad de claves distintas almacenadas
 
   /**
    * @function balancear
@@ -214,9 +215,11 @@ private:
    */
   Nodo *insertar(Nodo *nodo, uint32_t valor) {
     // Paso 1: Inserción normal de ABB
-    if (nodo == nullptr)
+    if (nodo == nullptr) {
+      n_++;
       return new Nodo(valor);
-      
+    }
+
     if (valor < nodo->valor)
       nodo->izq = insertar(nodo->izq, valor);
     else if (valor > nodo->valor)
@@ -245,8 +248,15 @@ private:
   }
 
 public:
-  AVL() : raiz(nullptr) {}
+  AVL() : raiz(nullptr), n_(0) {}
   ~AVL() { destruir(raiz); }
+
+  /**
+   * @function size
+   * @brief Retorna la cantidad de claves distintas almacenadas en el árbol.
+   * * @return size_t Número de nodos del árbol
+   */
+  size_t size() const { return n_; }
 
   /**
    * @function insert

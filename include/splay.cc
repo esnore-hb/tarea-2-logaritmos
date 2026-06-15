@@ -144,6 +144,7 @@ class SplayTree {
 private:
   Nodo *raiz;
   std::vector<Nodo *> camino;
+  size_t n_; // cantidad de claves distintas almacenadas
 
   /**
    * @function splay
@@ -216,17 +217,40 @@ private:
     return camino[0];
   }
 
+  /**
+   * @function destruir
+   * @brief Libera la memoria de todos los nodos de forma ITERATIVA.
+   * * Se usa una pila explícita (en el heap) en lugar de recursión para evitar
+   * desbordar la pila de llamadas: tras una secuencia de accesos un Splay Tree
+   * puede degenerar en un camino de profundidad ~n (p. ej. n = 2^25), lo que
+   * haría stack-overflow con un destructor recursivo.
+   * * @param  nodo Raíz del subárbol a destruir
+   */
   void destruir(Nodo *nodo) {
-    if (nodo == nullptr)
-      return;
-    destruir(nodo->izq);
-    destruir(nodo->der);
-    delete nodo;
+    std::vector<Nodo *> pila;
+    if (nodo != nullptr)
+      pila.push_back(nodo);
+    while (!pila.empty()) {
+      Nodo *cur = pila.back();
+      pila.pop_back();
+      if (cur->izq != nullptr)
+        pila.push_back(cur->izq);
+      if (cur->der != nullptr)
+        pila.push_back(cur->der);
+      delete cur;
+    }
   }
 
 public:
-  SplayTree() : raiz(nullptr) {}
+  SplayTree() : raiz(nullptr), n_(0) {}
   ~SplayTree() { destruir(raiz); }
+
+  /**
+   * @function size
+   * @brief Retorna la cantidad de claves distintas almacenadas en el árbol.
+   * * @return size_t Número de nodos del árbol
+   */
+  size_t size() const { return n_; }
 
   /**
    * @function search
@@ -250,11 +274,12 @@ public:
   void insert(uint32_t x) {
     if (raiz == nullptr) {
       raiz = new Nodo(x);
+      n_++;
       return;
     }
-    
+
     // Sube a la raíz el nodo más cercano a x
-    raiz = splay(raiz, x); 
+    raiz = splay(raiz, x);
     if (raiz->valor == x)
       return; // El elemento ya existe
 
@@ -273,5 +298,6 @@ public:
     actualizar_altura(raiz);
     actualizar_altura(nuevo);
     raiz = nuevo;
+    n_++;
   }
 };

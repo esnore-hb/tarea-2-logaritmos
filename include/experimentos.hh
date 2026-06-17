@@ -17,7 +17,7 @@
 //
 // El tamaño de los experimentos 7.3 (2^EXP_73) se fija en tiempo de COMPILACIÓN:
 //   por defecto 20 (~1 M, corre en segundos para probar);
-//   pasar -DEXP_73=25 para la corrida OFICIAL del informe (2^25, ~1 GB, minutos).
+//   pasar -DEXP_73=25 para la corrida OFICIAL del informe (2^25, hartos minutos).
 // ===========================================================================
 #ifndef EXPERIMENTOS_HH
 #define EXPERIMENTOS_HH
@@ -42,11 +42,11 @@ static const int C = 1;            // c en {1..10};  M = 10*c*N búsquedas
 static const double LAMBDA = 0.01; // lambda en [0.001,0.05] de la función sesgada
 static const uint64_t SEMILLA = 0xCAFEC0FFEEULL; // semilla base reproducible
 
-static const int EXP_MIN_72 = 10; // escenarios base (7.2): 2^10 .. 2^14
+static const int EXP_MIN_72 = 10; // escenarios base : 2^10 .. 2^14
 static const int EXP_MAX_72 = 14;
 
 #ifndef EXP_73
-#define EXP_73 20 // tamaño de los teoremas (7.3): 2^EXP_73. Oficial: -DEXP_73=25
+#define EXP_73 20 // tamaño de los teoremas: 2^EXP_73. Oficial: -DEXP_73=25
 #endif
 
 using Reloj = std::chrono::steady_clock;
@@ -95,7 +95,7 @@ distribucion_sesgada(size_t N, double lambda) {
 }
 
 // ---------------------------------------------------------------------------
-// 7.2  Escenarios base: para N en {2^10..2^14}, N inserciones + M=10cN búsquedas
+//      Escenarios base: para N en {2^10..2^14}, N inserciones + M=10cN búsquedas
 //      en 4 configuraciones (a,b,c,d). Cada configuración arranca de un árbol
 //      recién construido para medir inserción y búsqueda de forma independiente.
 //
@@ -159,7 +159,7 @@ void escenarios_base(const char *estructura) {
 }
 
 // ---------------------------------------------------------------------------
-// 7.3a  Sequential Access Theorem: para m en {N/100..N/10}, secuencia de m
+//       Sequential Access Theorem: para m en {N/100..N/10}, secuencia de m
 //       búsquedas de claves estrictamente CRECIENTES (paso fijo sobre el arreglo
 //       ordenado). El árbol se reconstruye antes de cada m para que cada medición
 //       sea independiente. Se espera Splay ~ O(m log(n/m)) vs AVL ~ O(m log n).
@@ -207,7 +207,7 @@ void sequential_access(const char *estructura) {
 }
 
 // ---------------------------------------------------------------------------
-// 7.3b  Working Set Theorem: para W en {10..10^6}, un subconjunto aleatorio de
+//       Working Set Theorem: para W en {10..10^6}, un subconjunto aleatorio de
 //       W claves distintas, y M=10cN búsquedas uniformes DENTRO de ese
 //       subconjunto. El árbol se reconstruye antes de cada W. Se espera que el
 //       costo por búsqueda escale como O(log W) en Splay vs O(log n) en AVL.
@@ -262,7 +262,7 @@ void working_set(const char *estructura) {
 }
 
 // ---------------------------------------------------------------------------
-// Corre toda la batería (7.2 + 7.3a + 7.3b) para una estructura.
+// Corre toda la batería para una estructura.
 // ---------------------------------------------------------------------------
 template <class Arbol>
 void correr_todo(const char *estructura) {

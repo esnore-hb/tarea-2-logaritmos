@@ -8,7 +8,7 @@
 //
 //   Compilar:  g++ -O2 -std=c++17 -static experimentos_avl.cc -o experimentos_avl.out
 //   Ejecutar:  ./experimentos_avl.out
-//   Oficial:   g++ -O2 -std=c++17 -static -DEXP_73=25 experimentos_avl.cc -o experimentos_avl.out
+//   Extenso:   g++ -O2 -std=c++17 -static -DEXP_73=25 experimentos_avl.cc -o experimentos_avl.out
 //
 // Salida: base_scenarios.avl.csv, sequential_access.avl.csv, working_set.avl.csv
 //         (y mensajes de progreso por stderr).

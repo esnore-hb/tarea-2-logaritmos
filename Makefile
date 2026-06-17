@@ -1,6 +1,6 @@
 CXX := g++
 # -static evita el conflicto de DLLs de libstdc++ en Windows/MinGW.
-FLAGS := -O2 -std=c++17 -static -Wall -Wextra
+FLAGS := -O3 -std=c++17 -static -Wall -Wextra
 # Tamaño de los experimentos 7.3: 2^EXP73. Oficial del informe: make EXP73=25
 EXP73 := 20
 
@@ -21,16 +21,6 @@ experimentos:
 
 graficos:
 	python graficos.py
-
-# ---------------------------------------------------------------------------
-# Pipeline LEGACY: benchmark AVL-only de la sección 7.2 (formato .results).
-# ---------------------------------------------------------------------------
-legacy:
-	$(CXX) ./data/data-generator.cc $(FLAGS) -o ./data/data-generator.out
-	bash ./scripts/data-generator.sh
-	$(CXX) ./avl-test.cc $(FLAGS) -o ./avl-test.out
-	bash ./scripts/avl-test.sh
-	python ./avl-test.py
 
 clean:
 	find . -type f \( -name "*.out" -o -name "*.data" -o -name "*.results" -o -name "*.png" -o -name "*.csv" \) -delete

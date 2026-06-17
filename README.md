@@ -38,6 +38,8 @@ EXP73=25 bash scripts/run_all.sh
 Esto compila los archivos, los ejecuta y genera los gráficos. Equivalente con
 `make` (si está disponible): `make` o `make EXP73=25`.
 
+También se puede hacer `make clean` para limpiar los archivos generados de la sección Salidas
+
 ### Salidas
 
 CSV (uno por estructura, se concatenan en el gráfico):
